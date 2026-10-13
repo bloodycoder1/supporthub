@@ -6,7 +6,7 @@ import { env } from "./config/env";
 import { logger } from "./config/logger";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { healthRouter, type HealthChecks } from "./routes/health";
-
+import authRouter from "./modules/auth/auth.routes.js";
 // A factory (instead of a global app) lets tests inject fake dependencies.
 export function createApp(checks: HealthChecks = {}) {
   const app = express();
@@ -16,8 +16,8 @@ export function createApp(checks: HealthChecks = {}) {
   app.use(cors({ origin: env.CORS_ORIGIN }));
   app.use(express.json({ limit: "100kb" }));
   app.use(pinoHttp({ logger }));
-
   app.use("/api/v1/health", healthRouter(checks));
+  app.use("/api/v1/auth", authRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
