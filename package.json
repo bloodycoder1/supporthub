@@ -1,0 +1,14 @@
+{
+  "name": "ai-supporthub",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI customer support SaaS: upload documents, get a RAG chatbot",
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "dev:api": "npm run dev -w apps/api",
+    "test:api": "npm test -w apps/api",
+    "build:api": "npm run build -w apps/api",
+    "infra:up": "docker compose up -d mongo redis",
+    "infra:down": "docker compose down"
+  }
+}
