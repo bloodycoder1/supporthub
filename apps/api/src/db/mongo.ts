@@ -2,8 +2,17 @@ import mongoose from "mongoose";
 import { env } from "../config/env";
 import { logger } from "../config/logger";
 
+
+const mongoUrl =
+  process.env.NODE_ENV === "test"
+    ? process.env.MONGO_TEST_URI
+    : env.MONGO_URI;
+
+if (!mongoUrl) {
+  throw new Error("MongoDB connection URI is missing");
+}
 export async function connectMongo(): Promise<void> {
-  await mongoose.connect(env.MONGO_URI, { serverSelectionTimeoutMS: 5000 });
+  await mongoose.connect(mongoUrl!, { serverSelectionTimeoutMS: 5000 });
   logger.info("MongoDB connected");
 }
 

@@ -1,7 +1,47 @@
 
 import bcrypt from "bcryptjs";
-import { UserModel } from "./auth.model.js";
-import type { RegisterInput } from "./auth.validation.js";
+import { UserModel } from "./auth.model";
+import type { RegisterInput } from "./auth.validation";
+import jwt from "jsonwebtoken";
+import type { LoginInput } from "./auth.validation";
+import { env } from "../../config/env";
+
+export async function loginUser(input: LoginInput) {
+  const user = await UserModel.findOne({
+    email: input.email
+  }).select("+passwordHash");
+
+  if (!user) {
+    throw new AuthError("Invalid email or password", 401);
+  }
+
+  const passwordMatches = await bcrypt.compare(
+    input.password,
+    user.passwordHash
+  );
+
+  if (!passwordMatches) {
+    throw new AuthError("Invalid email or password", 401);
+  }
+
+  const accessToken = jwt.sign(
+    { sub: user.id },
+    env.JWT_SECRET!,
+    { expiresIn: "15m", algorithm: "HS256" }
+  );
+
+  return {
+    accessToken,
+    tokenType: "Bearer",
+    expiresIn: 900,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    }
+  };
+}
+
 
 export class AuthError extends Error {
   constructor(

@@ -9,6 +9,7 @@ const schema = z.object({
   REDIS_URL: z.string().min(1).default("redis://127.0.0.1:6379"),
   CORS_ORIGIN: z.string().default("http://localhost:3000"),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
+  JWT_SECRET: z.string().min(32),
 });
 
 const parsed = schema.safeParse(process.env);
