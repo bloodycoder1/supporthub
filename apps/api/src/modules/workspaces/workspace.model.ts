@@ -1,6 +1,17 @@
-import mongoose, { Schema } from "mongoose";
 
-const workspaceSchema = new Schema(
+import mongoose, { Schema, type Model } from "mongoose";
+
+
+
+export interface Workspace {
+  name: string;
+  slug: string;
+  ownerId: mongoose.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const workspaceSchema = new Schema<Workspace>(
   {
     name: {
       type: String,
@@ -29,6 +40,8 @@ const workspaceSchema = new Schema(
   }
 );
 
-export const WorkspaceModel =
-  (mongoose.models.Workspace as mongoose.Model<any>) ||
-  mongoose.model("Workspace", workspaceSchema);
+
+
+export const WorkspaceModel: Model<Workspace> =
+  (mongoose.models.Workspace as Model<Workspace>) ||
+  mongoose.model<Workspace>("Workspace", workspaceSchema);

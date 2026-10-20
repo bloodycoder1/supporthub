@@ -9,6 +9,7 @@ import { healthRouter, type HealthChecks } from "./routes/health";
 import authRouter from "./modules/auth/auth.routes";
 import protectedAuthRouter from "./modules/auth/auth.protected.routes";
 import workspaceRouter from "./modules/workspaces/workspace.routes";
+import documentRouter from "./modules/documents/document.routes";
 // A factory (instead of a global app) lets tests inject fake dependencies.
 export function createApp(checks: HealthChecks = {}) {
   const app = express();
@@ -22,6 +23,8 @@ export function createApp(checks: HealthChecks = {}) {
   app.use("/api/v1/auth", authRouter);
   app.use("/api/v1/auth", protectedAuthRouter);
   app.use("/api/v1/workspaces", workspaceRouter);
+
+  app.use("/api/v1/workspaces/:workspaceId/documents", documentRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
