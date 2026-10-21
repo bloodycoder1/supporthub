@@ -2,7 +2,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { PDFParse } from "pdf-parse";
-import { documentUploadLimits } from "./document.validation.js";
+import { documentUploadLimits } from "./document.validation";
 
 const uploadDirectory = path.resolve(
   process.cwd(),

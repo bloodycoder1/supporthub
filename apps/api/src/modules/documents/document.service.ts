@@ -5,6 +5,45 @@ import mongoose from "mongoose";
 import { DocumentModel } from "./document.model";
 import { WorkspaceModel } from "../workspaces/workspace.model";
 
+export async function getWorkspaceDocument(
+  workspaceId: string,
+  documentId: string,
+) {
+  if (
+    !mongoose.isValidObjectId(workspaceId) ||
+    !mongoose.isValidObjectId(documentId)
+  ) {
+    return null;
+  }
+
+  const document = await DocumentModel.findOne({
+    _id: documentId,
+    workspaceId,
+  })
+    .select(
+      "_id workspaceId originalName mimeType size status errorMessage createdAt updatedAt",
+    )
+    .lean();
+
+  if (!document) {
+    return null;
+  }
+
+  return {
+    id: document._id.toString(),
+    workspaceId: document.workspaceId.toString(),
+    originalName: document.originalName,
+    mimeType: document.mimeType,
+    size: document.size,
+    status: document.status,
+    errorMessage: document.errorMessage,
+    createdAt: document.createdAt,
+    updatedAt: document.updatedAt,
+  };
+}
+
+
+
 export async function saveUploadedDocument(
   workspaceId: string,
   userId: string,

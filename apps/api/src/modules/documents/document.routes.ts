@@ -8,6 +8,7 @@ import {
   uploadDocumentController,
   listWorkspaceDocumentsController,
   deleteWorkspaceDocumentController,
+  getWorkspaceDocumentController,
 } from "./document.controller";
 
 const documentRouter = Router({ mergeParams: true });
@@ -18,6 +19,14 @@ documentRouter.get(
   authorizeDocumentUpload,
   listWorkspaceDocumentsController,
 );
+
+documentRouter.get(
+  "/:documentId",
+  authenticate,
+  authorizeDocumentUpload,
+  getWorkspaceDocumentController,
+);
+
 
 documentRouter.delete(
   "/:documentId",
