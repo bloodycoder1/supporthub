@@ -3,6 +3,8 @@ import { unlink } from "node:fs/promises";
 import path from "node:path";
 import mongoose from "mongoose";
 import { DocumentModel } from "./document.model";
+import { DocumentChunkModel } from "./document-chunk.model";
+import { uploadDirectory } from "./document.upload";
 import { WorkspaceModel } from "../workspaces/workspace.model";
 
 export async function getWorkspaceDocument(
@@ -152,20 +154,24 @@ export async function deleteWorkspaceDocument(
     workspaceId,
   });
 
-  // Then remove the private file.
-  const uploadDirectory = path.resolve(
-    process.cwd(),
-    "private_uploads",
-  );
+  // Remove associated chunks and their vector embeddings.
+  await DocumentChunkModel.deleteMany({
+    workspaceId: document.workspaceId,
+    documentId: document._id,
+  });
 
+  // Then remove the private file.
   try {
     await unlink(path.join(uploadDirectory, storageKey));
-  } catch (error) {
+  } catch (error: unknown) {
     // A missing file is already effectively deleted.
-    if (
-      !(error instanceof Error && "code" in error &&
-        error.code === "ENOENT")
-    ) {
+    const isEnoent =
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: string }).code === "ENOENT";
+
+    if (!isEnoent) {
       throw error;
     }
   }

@@ -4,6 +4,8 @@ import { DocumentModel } from "./document.model";
 import { extractDocumentText } from "./document.extractor";
 import { splitTextIntoChunks } from "./document.chunker";
 import { saveDocumentChunks } from "./document-chunk.service";
+import { generateEmbedding } from "../ai/embedding.service";
+import type { EmbeddedTextChunk } from "./document-chunk.service";
 
 export async function processDocument(
   workspaceId: string,
@@ -35,17 +37,34 @@ export async function processDocument(
       document.mimeType,
     );
 
+
     const chunks = splitTextIntoChunks(text);
 
     if (chunks.length === 0) {
       throw new Error("Document contains no extractable text");
     }
 
+  const chunksWithEmbeddings: EmbeddedTextChunk[] = [];
+
+    for (const chunk of chunks) {
+      const embedding = await generateEmbedding(chunk.content);
+
+      chunksWithEmbeddings.push({
+        ...chunk,
+        embedding,
+      });
+    }
+    console.log(
+  "[Embedding] Vector dimensions:",
+  chunksWithEmbeddings.map((chunk) => chunk.embedding.length),
+);
+
     await saveDocumentChunks(
       workspaceId,
       documentId,
-      chunks,
+      chunksWithEmbeddings,
     );
+
 
     document.status = "ready";
     document.errorMessage = undefined;

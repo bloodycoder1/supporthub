@@ -3,11 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { PDFParse } from "pdf-parse";
 import { documentUploadLimits } from "./document.validation";
-
-const uploadDirectory = path.resolve(
-  process.cwd(),
-  "private_uploads",
-);
+import { uploadDirectory } from "./document.upload";
 
 export async function extractDocumentText(
   storageKey: string,

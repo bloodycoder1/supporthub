@@ -1,5 +1,10 @@
-import "dotenv/config";
 import { z } from "zod";
+import dotenv from "dotenv";
+import path from "node:path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env"),
+});
 
 // Validate configuration once at startup so the app fails fast on bad config.
 const schema = z.object({

@@ -4,10 +4,14 @@ import { DocumentModel } from "./document.model";
 import { DocumentChunkModel } from "./document-chunk.model";
 import type { TextChunk } from "./document.chunker";
 
+export interface EmbeddedTextChunk extends TextChunk {
+  embedding: number[];
+}
+
 export async function saveDocumentChunks(
   workspaceId: string,
   documentId: string,
-  chunks: TextChunk[],
+  chunks: EmbeddedTextChunk[],
 ): Promise<void> {
   if (
     !mongoose.isValidObjectId(workspaceId) ||
@@ -38,13 +42,19 @@ export async function saveDocumentChunks(
     chunks.map((chunk) => ({
       updateOne: {
         filter: {
+          workspaceId: workspaceObjectId,
           documentId: documentObjectId,
           index: chunk.index,
         },
         update: {
           $set: {
-            workspaceId: workspaceObjectId,
             content: chunk.content,
+            embedding: chunk.embedding,
+          },
+          $setOnInsert: {
+            workspaceId: workspaceObjectId,
+            documentId: documentObjectId,
+            index: chunk.index,
           },
         },
         upsert: true,
@@ -52,10 +62,11 @@ export async function saveDocumentChunks(
     })),
   );
 
-  // Remove stale chunks if a document was reprocessed into fewer chunks.
+  // Remove stale chunks after reprocessing a shorter document.
   await DocumentChunkModel.deleteMany({
     workspaceId: workspaceObjectId,
     documentId: documentObjectId,
     index: { $gte: chunks.length },
   });
+  console.log("[Embedding] Chunks saved to MongoDB"); 
 }

@@ -8,6 +8,7 @@ export interface DocumentChunk {
   index: number;
   createdAt: Date;
   updatedAt: Date;
+  embedding?: number[];
 }
 
 const documentChunkSchema = new Schema<DocumentChunk>(
@@ -34,6 +35,10 @@ const documentChunkSchema = new Schema<DocumentChunk>(
       type: Number,
       required: true,
       min: 0,
+    },
+    embedding: {
+      type: [Number],
+      default: undefined,
     },
   },
   {

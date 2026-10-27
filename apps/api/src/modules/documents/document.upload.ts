@@ -6,10 +6,10 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { documentUploadLimits } from "./document.validation";
 
-const uploadDirectory = path.resolve(
-  process.cwd(),
-  "private_uploads",
-);
+export const uploadDirectory =
+  process.env.UPLOAD_DIR
+    ? path.resolve(process.env.UPLOAD_DIR)
+    : path.resolve(__dirname, "../../../private_uploads");
 
 const allowedMimeTypes = new Set<string>(
   documentUploadLimits.allowedMimeTypes,
