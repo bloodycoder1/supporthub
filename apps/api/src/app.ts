@@ -11,6 +11,9 @@ import protectedAuthRouter from "./modules/auth/auth.protected.routes";
 import workspaceRouter from "./modules/workspaces/workspace.routes";
 import documentRouter from "./modules/documents/document.routes";
 import { searchRouter } from "./modules/ai/search.routes";
+import { chatRouter } from "./modules/ai/chat.routes";
+import { conversationRouter } from "./modules/chat/conversation.routes";
+
 // A factory (instead of a global app) lets tests inject fake dependencies.
 export function createApp(checks: HealthChecks = {}) {
   const app = express();
@@ -28,6 +31,11 @@ export function createApp(checks: HealthChecks = {}) {
   app.use("/api/v1/workspaces/:workspaceId/documents", documentRouter);
   app.use(
   "/api/v1/workspaces/:workspaceId/search",searchRouter,);
+
+  app.use("/api/v1/workspaces/:workspaceId/chat", chatRouter,);
+  app.use("/api/v1/workspaces/:workspaceId/conversations", conversationRouter,);
+
+  
   app.use(notFoundHandler);
   app.use(errorHandler);
   return app;

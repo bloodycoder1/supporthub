@@ -12,6 +12,7 @@
     "worker:documents": "tsx watch src/workers/document.worker.ts"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.32",
     "@huggingface/transformers": "^4.3.1",
     "bcryptjs": "^3.0.3",
     "bullmq": "^6.4.0",

@@ -15,6 +15,8 @@ const schema = z.object({
   CORS_ORIGIN: z.string().default("http://localhost:3000"),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
   JWT_SECRET: z.string().min(32),
+  HF_TOKEN: z.string().optional(),
+  HF_MODEL: z.string().default("Qwen/Qwen2.5-7B-Instruct"),
 });
 
 const parsed = schema.safeParse(process.env);
