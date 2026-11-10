@@ -1,0 +1,16 @@
+npm ls next eslint eslint-config-next zod minimatch
+
+npm install -w apps/web @mui/material @emotion/react @emotion/styled @mui/icons-material
+
+npm install -w apps/web @reduxjs/toolkit react-redux
+
+npm install -w apps/web react-hook-form zod @hookform/resolvers
+
+npm install -w apps/web @mui/material-nextjs @emotion/cache
+
+@emotion/cache will cache the CSS from the Emotion for the components' 
+
+While the @mui/material-nextjs support the serverside rendering, usually the browser will render all the 
+components while it might take some time and unstractured HTML might be visible to the user
+thus we use it so on the server we can dirctly cache the css and show the element on 
+the browser with styling
